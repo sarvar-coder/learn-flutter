@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import '../models/restaurant.dart';
 
-class RestaurantLandscapeCard extends StatelessWidget {
+class RestaurantLandscapeCard extends StatefulWidget {
   final Restaurant restaurant;
 
   const RestaurantLandscapeCard({
     super.key,
     required this.restaurant,
   });
+
+  @override
+  State<RestaurantLandscapeCard> createState() =>
+      _RestaurantLandscapeCardState();
+}
+
+class _RestaurantLandscapeCardState extends State<RestaurantLandscapeCard> {
+  bool _isFavourited = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +26,20 @@ class RestaurantLandscapeCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Positioned(
+              top: 4.0,
+              right: 4.0,
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isFavourited = !_isFavourited;
+                  });
+                },
+                icon: Icon(
+                    _isFavourited ? Icons.favorite : Icons.favorite_border),
+                iconSize: 30.0,
+                color: Colors.red[400],
+              )),
           ClipRRect(
 // 1
             borderRadius: const BorderRadius.vertical(
@@ -27,7 +49,7 @@ class RestaurantLandscapeCard extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 2,
               child: Image.asset(
-                restaurant.imageUrl,
+                widget.restaurant.imageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -36,18 +58,18 @@ class RestaurantLandscapeCard extends StatelessWidget {
 // 1
 // 2
             title: Text(
-              restaurant.name,
+              widget.restaurant.name,
               style: textTheme.titleSmall,
             ),
             subtitle: Text(
-              restaurant.attributes,
+              widget.restaurant.attributes,
               maxLines: 1,
               style: textTheme.bodySmall,
             ),
 // 3
             onTap: () {
 // ignore: avoid_print
-              print('Tap on ${restaurant.name}');
+              print('Tap on ${widget.restaurant.name}');
             },
           ),
         ],
