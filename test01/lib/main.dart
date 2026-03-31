@@ -35,10 +35,10 @@ class _ProfileScreenState extends State<ProfileScreen>
   late TabController _tabController;
   bool _isPublicProfile = false;
   final DraggableScrollableController _sheetController =
-  DraggableScrollableController();
+      DraggableScrollableController();
 
   // Min/max sheet sizes as fraction of screen height
-  static const double _minSheetSize = 0.50;
+  static const double _minSheetSize = 0.5;
   static const double _maxSheetSize = 0.75;
 
   double _headerScale = 1.0;
@@ -52,10 +52,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     // Listen to sheet position and shrink header as sheet expands
     _sheetController.addListener(() {
       final isFullSize = _sheetController.size == 0.75;
-      final t = (_sheetController.size - _minSheetSize) /
+      final t =
+          (_sheetController.size - _minSheetSize) /
           (_maxSheetSize - _minSheetSize);
       setState(() {
-        _headerScale  =  isFullSize  ? 0.8 : 1.0;
+        _headerScale =  t.clamp(0.8, 1.0);
         _childOpacity = 1.0 - t.clamp(0.0, 1.0);
       });
     });
@@ -83,21 +84,29 @@ class _ProfileScreenState extends State<ProfileScreen>
               children: [
                 // Top bar
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios,
-                            size: 20, color: Colors.black87),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          size: 20,
+                          color: Colors.black87,
+                        ),
                         onPressed: () {},
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.settings_outlined,
-                            size: 24, color: Colors.black87),
+                        icon: const Icon(
+                          Icons.settings_outlined,
+                          size: 24,
+                          color: Colors.black87,
+                        ),
                         onPressed: () {},
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
@@ -107,16 +116,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ),
 
                 // Avatar + Name
-// In your build method, replace the header Column with:
-
+                // In your build method, replace the header Column with:
                 AnimatedScale(
                   scale: _headerScale,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut, // Optional: makes the movement feel more natural
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  // Optional: makes the movement feel more natural
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 4,
+                    ),
                     child: Row(
                       children: [
                         // Avatar
@@ -178,163 +189,143 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
 
-
-
                 const SizedBox(height: 16),
-
-                // Followers row
                 AnimatedScale(
                   scale: _childOpacity,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut, // Optional: makes the movement feel more natural
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  // Optional: makes the movement feel more natural
                   alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '0 ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
+                  child: Column(
+                    children: [
+                      // Followers row
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '0 ',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'followers',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: 'followers',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black45,
-                                ),
+                            ),
+                            const SizedBox(width: 16),
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '1 ',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'following',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '1 ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Divider
+                      const Divider(height: 1, color: Color(0xFFDDDDDD)),
+                      const SizedBox(height: 16),
+                      // Public profile toggle
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    'Public profile',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    'Let others view your portfolio, balance,\nand trade performance or keep them\nprivate',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black45,
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: 'following',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black45,
-                                ),
+                            ),
+                            Switch(
+                              value: _isPublicProfile,
+                              onChanged: (v) => setState(() => _isPublicProfile = v),
+                              activeColor: Colors.black,
+                              inactiveThumbColor: Colors.white,
+                              inactiveTrackColor: Colors.grey.shade300,
+                              trackOutlineColor: WidgetStateProperty.all(
+                                Colors.transparent,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Favorites header
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'FAVORITES',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black45,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            Icon(
+                              Icons.edit_outlined,
+                              size: 18,
+                              color: Colors.black54,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
 
-                const SizedBox(height: 20),
-
-                // Divider
-
-                AnimatedScale(
-                  scale: _childOpacity,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut, // Optional: makes the movement feel more natural
-                  alignment: Alignment.bottomCenter,
-                  child: const Divider(height: 1, color: Color(0xFFDDDDDD)),
                 ),
 
 
-                const SizedBox(height: 16),
-
-                // Public profile toggle
-                AnimatedScale(
-                  scale: _childOpacity,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut, // Optional: makes the movement feel more natural
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Public profile',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Let others view your portfolio, balance,\nand trade performance or keep them\nprivate',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.black45,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Switch(
-                          value: _isPublicProfile,
-                          onChanged: (v) =>
-                              setState(() => _isPublicProfile = v),
-                          activeColor: Colors.black,
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: Colors.grey.shade300,
-                          trackOutlineColor:
-                          WidgetStateProperty.all(Colors.transparent),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-
-
-                const SizedBox(height: 20),
-
-                // Favorites header
-                AnimatedScale(
-                  scale: _childOpacity,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut, // Optional: makes the movement feel more natural
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'FAVORITES',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black45,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        Icon(Icons.edit_outlined,
-                            size: 18, color: Colors.black54),
-                      ],
-                    ),
-                  ),
-                ),
 
 
               ],
@@ -373,7 +364,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                     // Tab bar
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       child: _SegmentedTabBar(controller: _tabController),
                     ),
 
@@ -383,7 +376,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                         controller: _tabController,
                         children: [
                           _PortfolioEmptyState(
-                              scrollController: scrollController),
+                            scrollController: scrollController,
+                          ),
                           _InsightsTab(scrollController: scrollController),
                           _EventsTab(scrollController: scrollController),
                         ],
@@ -429,6 +423,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
 class _SegmentedTabBar extends StatefulWidget {
   final TabController controller;
+
   const _SegmentedTabBar({required this.controller});
 
   @override
@@ -455,8 +450,7 @@ class _SegmentedTabBarState extends State<_SegmentedTabBar> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.only(right: 8),
-            padding:
-            const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
             decoration: BoxDecoration(
               color: selected ? Colors.black : Colors.transparent,
               borderRadius: BorderRadius.circular(50),
@@ -483,6 +477,7 @@ class _SegmentedTabBarState extends State<_SegmentedTabBar> {
 
 class _PortfolioEmptyState extends StatelessWidget {
   final ScrollController scrollController;
+
   const _PortfolioEmptyState({required this.scrollController});
 
   @override
@@ -514,8 +509,11 @@ class _PortfolioEmptyState extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          trailing: const Icon(Icons.chevron_right,
-              color: Colors.black54, size: 22),
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: Colors.black54,
+            size: 22,
+          ),
           onTap: () {},
         ),
       ],
@@ -527,6 +525,7 @@ class _PortfolioEmptyState extends StatelessWidget {
 
 class _InsightsTab extends StatelessWidget {
   final ScrollController scrollController;
+
   const _InsightsTab({required this.scrollController});
 
   @override
@@ -537,11 +536,7 @@ class _InsightsTab extends StatelessWidget {
       children: const [
         Text(
           'Insights will appear here once\nyou start investing.',
-          style: TextStyle(
-            fontSize: 17,
-            color: Colors.black38,
-            height: 1.55,
-          ),
+          style: TextStyle(fontSize: 17, color: Colors.black38, height: 1.55),
         ),
       ],
     );
@@ -550,6 +545,7 @@ class _InsightsTab extends StatelessWidget {
 
 class _EventsTab extends StatelessWidget {
   final ScrollController scrollController;
+
   const _EventsTab({required this.scrollController});
 
   @override
@@ -560,11 +556,7 @@ class _EventsTab extends StatelessWidget {
       children: const [
         Text(
           'No upcoming events.',
-          style: TextStyle(
-            fontSize: 17,
-            color: Colors.black38,
-            height: 1.55,
-          ),
+          style: TextStyle(fontSize: 17, color: Colors.black38, height: 1.55),
         ),
       ],
     );
